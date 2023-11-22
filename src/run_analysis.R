@@ -23,15 +23,15 @@ df_xtrain <-  select(df_xtrain, matches('mean[^A-Z].*[XYZ]$|std.*[XYZ]$'))
 #read in the train-activity-labels
 df_ytrain <- read.table("./data/train/y_train.txt")
 
-#read in the train subject labels
-df_train_subject = read.table("data/train/subject_train.txt")
-
 # combine the train features with the train label
 df_train <- cbind(df_xtrain, df_ytrain$V1)
 
 # rename the label column
 # REQUIREMENT 4: Appropriately labels the data set with descriptive variable names. 
 df_train <- rename(df_train, c('Activity_ID' = 'df_ytrain$V1'))
+
+#read in the train activity labels
+df_train_subject = read.table("data/train/subject_train.txt")
 
 # combine the test features with the test label
 df_train <- cbind(df_train, df_train_subject$V1)
@@ -58,15 +58,15 @@ df_xtest <- select(df_xtest, matches('mean[^A-Z].*[XYZ]$|std.*[XYZ]$'))
 #read in the test activity labels
 df_ytest <- read.table("./data/test/y_test.txt")
 
-#read in the test subject labels
-df_test_subject = read.table("data/test/subject_test.txt")
-
 # combine the test features with the test label
 df_test <- cbind(df_xtest, df_ytest$V1)
 
 # rename the label column
 # REQUIREMENT 4: Appropriately labels the data set with descriptive variable names. 
 df_test <- rename(df_test, c('Activity_ID' = 'df_ytest$V1'))
+
+#read in the test subject labels
+df_test_subject = read.table("data/test/subject_test.txt")
 
 # combine the test features with the test label
 df_test <- cbind(df_test, df_test_subject$V1)
@@ -82,7 +82,8 @@ df_test <- rename(df_test, c('Subject_ID' = 'df_test_subject$V1'))
 # REQUIREMENT 1: Merges the Training and test sets to create one data set.
 df <- merge(df_train,df_test,all=TRUE)
 
-######## BRING IN THE LABELS ########
+
+######## BRING IN THE ACTIVITY LABELS ########
 # read in the activity labels
 df_activity_labels <- read.table('./data/activity_labels.txt', 
                                  col.names=c('Activity_ID', 
@@ -97,4 +98,5 @@ df <- merge(df, df_activity_labels, by='Activity_ID')
 # melt the data to make it tidy
 # REQUIREMENT 5:  creates a second, independent tidy data set with the average of each variable for each activity and each subject
 df_tidy <- melt(df, id=c( 'Subject_ID', 'Activity_ID', 'Activity_Title'))
-
+write.table(df_tidy, 'tidy_data.txt', row.name=FALSE
+            )
